@@ -14,5 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('register', 'GuestsController@create');
+Route::post('register', 'GuestsController@store');
+
+Route::post('guests', 'GuestsController@index');
 
 Route::get('', 'IndexController@dashboard');

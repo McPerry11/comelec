@@ -5,6 +5,6 @@ $.ajaxSetup({
 });
 
 $(window).on('load', function() {
-	$('.title').text('');
+	$('.pageloader .title').text('');
 	$('.pageloader').removeClass('is-active');
 });

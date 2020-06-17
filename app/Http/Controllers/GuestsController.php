@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Guest;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class GuestsController extends Controller
@@ -11,9 +13,19 @@ class GuestsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+      if ($request->data == 'phone') {
+        $duplicate = Guest::where('contact_number', $request->contact_number)->get();
+
+        if (count($duplicate) > 0) {
+          return response()->json(array(
+            'status' => 'error',
+            'msg' => 'This contact number is already taken'
+          ));
+        }
+        return response()->json(array('status' => 'success'));
+      }
     }
 
     /**
@@ -23,7 +35,7 @@ class GuestsController extends Controller
      */
     public function create()
     {
-        return view('register');
+      return view('register');
     }
 
     /**
@@ -34,7 +46,36 @@ class GuestsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $regex = '/\d{10}/';
+      if (preg_match($regex, $request->contact_number)) {
+        $duplicate = Guest::where('contact_number', $request->contact_number)->get();
+        if (count($duplicate) > 0) {
+          return response()->json(array('status' => 'error', 'msg' => 'The contact number is already taken', 'warn' => 'This contact number is already taken'));
+        }
+      } else {
+        return response()->json(array('status' => 'error', 'msg' => 'The contact number is invalid', 'warn' => 'Contact number must consist of 10 digits'));
+      }
+
+      $request->last_name = strip_tags($request->last_name);
+      $request->first_name = strip_tags($request->first_name);
+      $request->middle_name = strip_tags($request->middle_name);
+      $request->barangay = strip_tags($request->barangay);
+
+      $guest = new Guest;
+      $guest->fill($request->only([
+        'last_name',
+        'first_name',
+        'middle_name',
+        'barangay',
+        'contact_number',
+        'schedule'
+      ]));
+
+      $guest->created_at = Carbon::now('+8:00');
+      $guest->updated_at = Carbon::now('+8:00');
+
+      $guest->save();
+      return response()->json(array('status' => 'success', 'msg' => 'Registration Successful'));
     }
 
     /**
@@ -81,4 +122,4 @@ class GuestsController extends Controller
     {
         //
     }
-}
+  }

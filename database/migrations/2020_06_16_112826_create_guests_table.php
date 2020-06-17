@@ -19,7 +19,7 @@ class CreateGuestsTable extends Migration
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('barangay');
-            $table->unique('contact_number');
+            $table->string('contact_number')->unique();
             $table->enum('schedule', [
                 'CERTIFICATION',
                 'REGISTRATION'

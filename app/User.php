@@ -45,6 +45,6 @@ class User extends Authenticatable
 
         self::creating(function($model) {
             $model->password = Hash::make($model->password);
-        })
+        });
     }
 }
