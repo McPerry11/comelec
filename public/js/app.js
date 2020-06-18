@@ -5,6 +5,8 @@ $.ajaxSetup({
 });
 
 $(window).on('load', function() {
-	$('.pageloader .title').text('');
-	$('.pageloader').removeClass('is-active');
+	if ($(location).attr('pathname') != '/comelec/public/') {
+		$('.pageloader .title').text('');
+		$('.pageloader').removeClass('is-active');
+	}
 });

@@ -15,28 +15,11 @@ $(function() {
 	}
 
 	$('.pageloader .title').text('Loading Registration');
-	if (window.matchMedia('only screen and (max-width: 768px)').matches) {
-		$('#middlefield').css('width', '100%');
-		$('#sched label').css('margin', '0');
-		$('.box').css('margin-top', '25px');
-	}
 	Swal.fire({
 		icon: 'info',
 		title: 'Privacy Notice',
 		text: 'The event organizers collected information from you as participants for the purposes of registration and overall event management. By providing your information, you are giving your consent to us to use your information for the aforementioned purposes. After conclusion of the event and completion of all necessary reports, your personal data will be saved in secure files for future reference and networking activities. If you do not wish to be contacted further after this event, kindly inform the organizers.',
 		confirmButtonText: 'Proceed'
-	});
-
-	$(window).resize(function() {
-		if (window.matchMedia('only screen and (max-width: 768px)').matches) {
-			$('#middlefield').css('width', '100%');
-			$('#sched label').css('margin', '0');
-			$('.box').css('margin-top', '25px');
-		} else {
-			$('#middlefield').css('width', '100px');
-			$('.radio+.radio').css('margin-left', '.5em');
-			$('.box').css('margin-top', '0');
-		}
 	});
 
 	$('form').submit(function(e) {
@@ -63,7 +46,7 @@ $(function() {
 				$.ajax({
 					type: 'POST',
 					url: 'register',
-					data: {last_name:lastname, first_name:firstname, middle_name:middlename, barangay:barangay, contact_number:phone, schedule:schedule},
+					data: {last_name:lastname, first_name:firstname, middle_name:middlename, barangay:barangay, contact_number:phone, schedule:schedule, data:'register'},
 					datatype: 'JSON',
 					success: function(response) {
 						ajaxResponse();

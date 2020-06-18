@@ -9,3 +9,17 @@
 input[type="radio"] {
 	margin-right: 5px;
 }
+
+@media screen and (max-width: 768px) {
+	#middlefield {
+		width: 100%;
+	}
+
+	#sched label {
+		margin: 0;
+	}
+
+	.box {
+		margin-top: 25px;
+	}
+}

@@ -19,3 +19,5 @@ Route::post('register', 'GuestsController@store');
 Route::post('guests', 'GuestsController@index');
 
 Route::get('', 'IndexController@dashboard');
+
+Route::post('logs', 'IndexController@logs');
