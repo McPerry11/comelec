@@ -27,7 +27,46 @@ class GuestsController extends Controller
         }
         return response()->json(array('status' => 'success'));
       } else if ($request->data == 'dashboard') {
-        return Guest::paginate(50);
+        $cert = Guest::where('schedule', 'CERTIFICATION')->count();
+        $reg = Guest::where('schedule', 'REGISTRATION')->count();
+        switch($request->sort) {
+          case 'nameA':
+          $guests = Guest::orderBy('last_name', 'asc')->paginate(20);
+          break;
+
+          case 'nameD':
+          $guests = Guest::orderBy('last_name', 'desc')->paginate(20);
+          break;
+
+          case 'barangayA':
+          $guests = Guest::orderBy('barangay', 'asc')->paginate(20);
+          break;
+
+          case 'barangayD':
+          $guests = Guest::orderBy('barangay', 'desc')->paginate(20);
+          break;
+
+          case 'numberA':
+          $guests = Guest::orderBy('contact_number', 'asc')->paginate(20);
+          break;
+
+          case 'numberD':
+          $guests = Guest::orderBy('contact_number', 'desc')->paginate(20);
+          break;
+
+          case 'scheduleA':
+          $guests = Guest::orderBy('schedule', 'asc')->paginate(20);
+          break;
+
+          case 'scheduleD':
+          $guests = Guest::orderBy('schedule', 'desc')->paginate(20);
+          break;
+
+          default:
+          $guests = Guest::latest()->paginate(20);
+          break;
+        }
+        return response()->json(array('cert' => $cert, 'reg' => $reg, 'guests' => $guests));
       }
     }
 

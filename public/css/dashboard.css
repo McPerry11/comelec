@@ -1,5 +1,28 @@
 .container {
 	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+th a {
+	width: 100%;
+	display: block;
+	color: #363636;
+}
+
+th .icon {
+	float: right;
+}
+
+th:nth-child(1) {
+	min-width: 95px;
+}
+
+th:nth-child(2), th:nth-child(3) {
+	min-width: 175px;
+}
+
+th:nth-child(4) {
+	min-width: 120px;
 }
 
 .buttons, #page {

@@ -15,7 +15,7 @@ class IndexController extends Controller
 
 	public function logs(Request $request) {
 		if ($request->data == 'logs') {
-			return Log::paginate(20);
+			return Log::latest()->paginate(50);
 		}
 	}
 }
