@@ -17,7 +17,12 @@ class GuestsController extends Controller
     public function index(Request $request)
     {
       if ($request->data == 'phone') {
-        $duplicate = Guest::where('contact_number', $request->contact_number)->count();
+        if ($request->id) {
+          $duplicate = Guest::where('contact_number', $request->contact_number)
+          ->where('id', '<>', $request->id)->count();
+        } else {
+          $duplicate = Guest::where('contact_number', $request->contact_number)->count();
+        }
         if ($duplicate > 0) {
           return response()->json(array(
             'status' => 'error',
@@ -77,7 +82,7 @@ class GuestsController extends Controller
           $cert = Guest::where('schedule', 'CERTIFICATION')->count();
           $reg = Guest::where('schedule', 'REGISTRATION')->count();
           if ($orderby == 'default') {
-            $guests = Guest::latest()->paginate(20);
+            $guests = Guest::orderBy('updated_at', 'desc')->paginate(20);
           } else {
             $guests = Guest::orderBy($orderby, $order)->paginate(20);
           }
@@ -88,7 +93,8 @@ class GuestsController extends Controller
             ->orWhere('middle_name', 'LIKE', '%' . $request->search . '%')
             ->orWhere('barangay', 'LIKE', '%' . $request->search . '%')
             ->orWhere('contact_number', 'LIKE', '%' . $request->search . '%')
-            ->orWhere('schedule', 'LIKE', '%' . $request->search . '%')->paginate(20);
+            ->orWhere('schedule', 'LIKE', '%' . $request->search . '%')
+            ->orderBy('updated_at', 'desc ')->paginate(20);
             $guestscheck = Guest::where('last_name', 'LIKE', '%' . $request->search . '%')
             ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
             ->orWhere('middle_name', 'LIKE', '%' . $request->search . '%')
@@ -108,8 +114,7 @@ class GuestsController extends Controller
             ->orWhere('middle_name', 'LIKE', '%' . $request->search . '%')
             ->orWhere('barangay', 'LIKE', '%' . $request->search . '%')
             ->orWhere('contact_number', 'LIKE', '%' . $request->search . '%')
-            ->orWhere('schedule', 'LIKE', '%' . $request->search . '%')
-            ->orderBy($orderby, $order)->get();
+            ->orWhere('schedule', 'LIKE', '%' . $request->search . '%')->get();
           }
           $reg = 0;
           $cert = 0;
@@ -195,9 +200,9 @@ class GuestsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
-        //
+      return Guest::find($request->id);
     }
 
     /**
@@ -207,9 +212,59 @@ class GuestsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+      if ($request->data == 'update') {
+        $regex = '/\d{10}/';
+        if (preg_match($regex, $request->contact_number)) {
+          $duplicate = Guest::where('contact_number', $request->contact_number)
+          ->where('id', '<>', $request->id)->count();
+          if ($duplicate > 0) {
+            return response()->json(array('status' => 'error', 'msg' => 'The contact number is already taken', 'warn' => 'This contact number is already taken'));
+          }
+        } else {
+          return response()->json(array('status' => 'error', 'msg' => 'The contact number is invalid', 'warn' => 'Contact number must consist of 10 digits'));
+        }
+
+        $request->last_name = strip_tags($request->last_name);
+        $request->first_name = strip_tags($request->first_name);
+        $request->middle_name = strip_tags($request->middle_name);
+        $request->barangay = strip_tags($request->barangay);
+
+        $guest = Guest::find($request->id);
+
+        if ($request->firstname . ' ' . $request->middle_name . ' ' . $request->last_name != $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name) {
+          Log::create(['description' => 'User updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s name to ' . $request->first_name . ' ' . $request->middle_name . ' ' . $request->last_name . '.']);
+          $guest->fill($request->only([
+            'last_name',
+            'first_name',
+            'middle_name'
+          ]));
+        }
+        if ($request->barangay != $guest->barangay) {
+          Log::create(['description' => 'User updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s barangay to ' . $request->barangay . '.']);
+        }
+        if ($request->contact_number != $guest->contact_number) {
+          Log::create(['description' => 'User updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s contact number to ' . $request->contact_number . '.']);
+        }
+        if ($request->schedule != $guest->schedule) {
+          Log::create(['description' => 'User updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s schedule to VOTER ' . $request->schedule . '.']);
+        }
+
+        $guest->fill($request->only([
+          'last_name',
+          'first_name',
+          'middle_name',
+          'barangay',
+          'contact_number',
+          'schedule'
+        ]));
+
+        $guest->updated_at = Carbon::now('+8:00');
+        $guest->save();
+
+        return response()->json(array('status' => 'success', 'msg' => 'Successfully updated ' . $guest->first_name . ' ' . $guest->last_name));
+      }
     }
 
     /**

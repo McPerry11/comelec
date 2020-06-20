@@ -1,6 +1,9 @@
 .container {
-	padding-top: 20px;
-	padding-bottom: 20px;
+	padding: 20px 32px;
+}
+
+#header .buttons .icon {
+	margin-right: 0;
 }
 
 th a {
@@ -25,6 +28,30 @@ th:nth-child(4) {
 	min-width: 120px;
 }
 
-.buttons, #page {
+table .buttons, #page {
 	width: 90px;
+}
+
+#middlefield {
+	width: 100px;
+}
+
+input[type="radio"] {
+	margin-right: 5px;
+}
+
+@media screen and (max-width: 768px) {
+	.container.is-fluid {
+		padding: 20px 0;
+	}
+
+	#middlefield {
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 330px) {
+	#sched label {
+		margin: 0;
+	}
 }

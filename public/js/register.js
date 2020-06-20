@@ -3,7 +3,7 @@ $(function() {
 		console.log(error);
 		Swal.fire({
 			icon: 'error',
-			title: 'Cannot connect to server',
+			title: 'Cannot Connect to Server',
 			text: 'Something went wrong. Please try again later.'
 		});
 	}
@@ -68,7 +68,7 @@ $(function() {
 								confirmButtonText: 'Try Again',
 							});
 							$('#phone').addClass('is-danger');
-							$('#phonecontrol').addClass('has-icons-right').append('<span class="icon is-right has-text-danger"><i class="fas fa-times"></i></span>')
+							$('#phonecontrol').addClass('has-icons-right').append('<span class="icon is-right has-text-danger"><i class="fas fa-times"></i></span>');
 							$('#warning').addClass('has-text-danger').text(response.warn);
 						}
 					},
@@ -89,6 +89,9 @@ $(function() {
 				$('#submit').attr('disabled', true);
 			} else {
 				$('#submit').attr('disabled', true);
+				$(this).removeClass('is-danger');
+				$('#warning').removeClass('has-text-danger').text('Do not enter the first zero');
+				$('.icon.is-right').remove();
 				$('#phonecontrol').addClass('is-loading');
 				$(this).attr('readonly', true);
 				let number = '0' + $(this).val();

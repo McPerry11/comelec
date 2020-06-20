@@ -19,5 +19,7 @@ Route::post('register', 'GuestsController@store');
 Route::post('guests', 'GuestsController@index');
 
 Route::get('', 'IndexController@dashboard');
+Route::post('guest/edit', 'GuestsController@edit');
+Route::post('guest/update', 'GuestsController@update');
 
 Route::post('logs', 'IndexController@logs');

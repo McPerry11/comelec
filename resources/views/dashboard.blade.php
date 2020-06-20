@@ -30,6 +30,7 @@
 		</tbody>
 	</table>
 </div>
+@include('_modals')
 @endsection
 
 @section('scripts')

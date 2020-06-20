@@ -20,7 +20,17 @@
 		@else
 		<div class="container is-fluid">
 			<div class="box">
-				<h3 class="title">UE COMELEC Registration & Scheduling</h3>
+				<div id="header" class="columns">
+					<div class="column">
+						<h3 class="title">UE COMELEC Registration & Scheduling</h3>
+					</div>
+					<form class="column is-3-desktop is-5-tablet">
+						<div class="buttons is-right">
+							<button id="export" class="button is-info" type="button" disabled><span class="icon"><i class="fas fa-file-excel"></i></span>Export</button>
+							<button id="logout" class="button is-danger is-outlined" type="submit"><span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout</button>
+						</div>
+					</form>
+				</div>
 				<div class="tabs is-boxed">
 					<ul>
 						<li id="dashboard"><a><span class="icon"><i class="fas fa-columns"></i></span><span>Dashboard</span></a></li>
