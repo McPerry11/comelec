@@ -18,7 +18,6 @@ class GuestsController extends Controller
     {
       if ($request->data == 'phone') {
         $duplicate = Guest::where('contact_number', $request->contact_number)->count();
-
         if ($duplicate > 0) {
           return response()->json(array(
             'status' => 'error',
@@ -27,44 +26,100 @@ class GuestsController extends Controller
         }
         return response()->json(array('status' => 'success'));
       } else if ($request->data == 'dashboard') {
-        $cert = Guest::where('schedule', 'CERTIFICATION')->count();
-        $reg = Guest::where('schedule', 'REGISTRATION')->count();
         switch($request->sort) {
           case 'nameA':
-          $guests = Guest::orderBy('last_name', 'asc')->paginate(20);
+          $orderby = 'last_name';
+          $order = 'asc';
           break;
 
           case 'nameD':
-          $guests = Guest::orderBy('last_name', 'desc')->paginate(20);
+          $orderby = 'last_name';
+          $order = 'desc';
           break;
 
           case 'barangayA':
-          $guests = Guest::orderBy('barangay', 'asc')->paginate(20);
+          $orderby = 'barangay';
+          $order = 'asc';
           break;
 
           case 'barangayD':
-          $guests = Guest::orderBy('barangay', 'desc')->paginate(20);
+          $orderby = 'barangay';
+          $order = 'desc';
           break;
 
           case 'numberA':
-          $guests = Guest::orderBy('contact_number', 'asc')->paginate(20);
+          $orderby = 'contact_number';
+          $order = 'asc';
           break;
 
           case 'numberD':
-          $guests = Guest::orderBy('contact_number', 'desc')->paginate(20);
+          $orderby = 'contact_number';
+          $order = 'desc';
           break;
 
           case 'scheduleA':
-          $guests = Guest::orderBy('schedule', 'asc')->paginate(20);
+          $orderby = 'schedule';
+          $order = 'asc';
           break;
 
           case 'scheduleD':
-          $guests = Guest::orderBy('schedule', 'desc')->paginate(20);
+          $orderby = 'schedule';
+          $order = 'desc';
           break;
 
           default:
-          $guests = Guest::latest()->paginate(20);
+          $orderby = 'default';
+          $order = 'default';
           break;
+        }
+
+        if ($request->search == '') {
+          $cert = Guest::where('schedule', 'CERTIFICATION')->count();
+          $reg = Guest::where('schedule', 'REGISTRATION')->count();
+          if ($orderby == 'default') {
+            $guests = Guest::latest()->paginate(20);
+          } else {
+            $guests = Guest::orderBy($orderby, $order)->paginate(20);
+          }
+        } else {
+          if ($orderby == 'default') {
+            $guests = Guest::where('last_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('middle_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('barangay', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('contact_number', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('schedule', 'LIKE', '%' . $request->search . '%')->paginate(20);
+            $guestscheck = Guest::where('last_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('middle_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('barangay', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('contact_number', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('schedule', 'LIKE', '%' . $request->search . '%')->get();
+          } else {
+            $guests = Guest::where('last_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('middle_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('barangay', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('contact_number', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('schedule', 'LIKE', '%' . $request->search . '%')
+            ->orderBy($orderby, $order)->paginate(20);
+            $guestscheck = Guest::where('last_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('middle_name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('barangay', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('contact_number', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('schedule', 'LIKE', '%' . $request->search . '%')
+            ->orderBy($orderby, $order)->get();
+          }
+          $reg = 0;
+          $cert = 0;
+          foreach ($guestscheck as $guest) {
+            if ($guest->schedule == 'CERTIFICATION') {
+              $cert ++;
+            } else {
+              $reg ++;
+            }
+          }
         }
         return response()->json(array('cert' => $cert, 'reg' => $reg, 'guests' => $guests));
       }

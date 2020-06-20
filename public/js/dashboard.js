@@ -28,7 +28,7 @@ $(function() {
 		$.ajax({
 			type: 'POST',
 			url: urlGuest,
-			data: {data:'dashboard', sort:sortGuest},
+			data: {data:'dashboard', sort:sortGuest, search:searchGuest},
 			datatype: 'JSON',
 			success: function(data) {
 				$('#search button').removeAttr('disabled');
@@ -67,7 +67,7 @@ $(function() {
 		$.ajax({
 			type: 'POST',
 			url: urlLog,
-			data: {data:'logs'},
+			data: {data:'logs', search:searchLog},
 			datatype: 'JSON',
 			success: function(data) {
 				$('#search button').removeAttr('disabled');
@@ -92,8 +92,8 @@ $(function() {
 	$('.pageloader .title').text('Loading Dashboard');
 	$('#dashboard').addClass('is-active');
 	$('thead tr').append('<th><a id="name" title="Sort Ascending">Name<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="barangay" title="Sort Ascending">Barangay<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="number" title="Sort Ascending">Contact Number<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="schedule" title="Sort Ascending">Schedule<span class="icon"><i class="fas fa-sort"></i></span></a></th><th>Actions</th>');
-	var urlGuest = 'guests', currentGuest, prevGuest, nextGuest, lastGuest, sortGuest = 'default', oldheader = '';
-	var urlLog = 'logs', currentLog, prevLog, nextLog, lastLog;
+	var urlGuest = 'guests', currentGuest, prevGuest, nextGuest, lastGuest, sortGuest = 'default', oldheader = '', searchGuest = '';
+	var urlLog = 'logs', currentLog, prevLog, nextLog, lastLog, searchLog = '';
 	retrieveGuests();
 
 	$('body').delegate('.pagination a', 'click', function() {
@@ -129,8 +129,8 @@ $(function() {
 				$('#dashboard').addClass('is-active');
 				$('th').remove();
 				$('thead tr').append('<th><a id="name" title="Sort Ascending">Name<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="barangay" title="Sort Ascending">Barangay<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="number" title="Sort Ascending">Contact Number<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="schedule" title="Sort Ascending">Schedule<span class="icon"><i class="fas fa-sort"></i></span></a></th><th>Actions</th>');
-				$('#search input').attr('placeholder', 'Search name, barangay, contact number, or schedule...');
-				sortGuest = 'default';
+				$('#search input').attr('placeholder', 'Search name, barangay, contact number, or schedule...').val('');
+				sortGuest = 'default', searchGuest = '';
 				retrieveGuests();
 			}
 		}
@@ -144,7 +144,8 @@ $(function() {
 				$('#logs').addClass('is-active');
 				$('th').remove();
 				$('thead tr').append('<th>Log #</th><th>Description</th>');
-				$('#search input').attr('placeholder', 'Search log number or description...');
+				$('#search input').attr('placeholder', 'Search log number or description...').val('');
+				searchLog = '';
 				retrieveLogs();
 			}
 		}
@@ -152,6 +153,15 @@ $(function() {
 
 	$('#search').submit(function(e) {
 		e.preventDefault();
+		if ($('#dashboard').hasClass('is-active')) {
+			searchGuest = $('#search input').val();
+			urlGuest = 'guests';
+			retrieveGuests();
+		} else {
+			searchLog = $('#search input').val();
+			urlLog = 'logs';
+			retrieveLogs();
+		}
 	});
 
 	$('body').delegate('th a', 'click', function() {

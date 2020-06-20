@@ -15,7 +15,12 @@ class IndexController extends Controller
 
 	public function logs(Request $request) {
 		if ($request->data == 'logs') {
-			return Log::latest()->paginate(50);
+			if ($request->search == '') {
+				return Log::latest()->paginate(50);
+			} else {
+				return Log::where('id', 'LIKE', '%' . $request->search . '%')
+				->orWhere('description', 'LIKE', '%' . $request->search . '%')->paginate(50);
+			}
 		}
 	}
 }
