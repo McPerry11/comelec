@@ -106,7 +106,7 @@ $(function() {
 		$('#header .buttons').removeClass('is-right').addClass('is-centered');
 		$('#header .title').addClass('has-text-centered');
 	}
-	$('.pageloader .title').text('Loading Dashboard');
+	$('.pageloader .title').text('Fetching Data');
 	$('#dashboard').addClass('is-active');
 	$('thead tr').append('<th><a id="name" title="Sort Ascending">Name<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="barangay" title="Sort Ascending">Barangay<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="number" title="Sort Ascending">Contact Number<span class="icon"><i class="fas fa-sort"></i></span></a></th><th><a id="schedule" title="Sort Ascending">Schedule<span class="icon"><i class="fas fa-sort"></i></span></a></th><th>Actions</th>');
 	var urlGuest = 'guests', currentGuest, prevGuest, nextGuest, lastGuest, sortGuest = 'default', oldheader = '', searchGuest = '', editId;
@@ -394,5 +394,10 @@ $(function() {
 				$('input[type="radio"]').removeAttr('disabled');
 			}
 		});
+	});
+
+	$('#logout').click(function() {
+		$('.pageloader .title').text('Logging Out');
+		$('.pageloader').addClass('is-active');
 	});
 });
