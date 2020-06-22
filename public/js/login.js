@@ -29,7 +29,7 @@ $(function() {
 					}).then(function() {
 						$('.pageloader .title').text('Loading Dashboard');
 						$('.pageloader').addClass('is-active');
-						window.location.href = "/comelec/public";
+						window.location.href = "/comelec";
 					});
 				} else if (response.status == 'error') {
 					$('#username').val('').addClass('is-danger');

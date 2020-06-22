@@ -141,10 +141,10 @@ $(function() {
 			$('#page input').addClass('is-danger');
 		} else {
 			if ($('#dashboard').hasClass('is-active')) {
-				urlGuest = 'http://localhost/comelec/public/guests?page=' + page;
+				urlGuest = 'http://34.72.171.132/comelec/guests?page=' + page;
 				retrieveGuests();
 			} else if ($('#logs').hasClass('is-active')) {
-				urlLog = 'http://localhost/comelec/public/logs?page=' + page;
+				urlLog = 'http://34.72.171.132/comelec/logs?page=' + page;
 				retrieveLogs();
 			}
 		}
