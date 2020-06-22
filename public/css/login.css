@@ -1,0 +1,12 @@
+.container.is-fluid {
+	height: 100%;
+	padding: 20px 32px;
+}
+
+.columns {
+	height: 100%;
+}
+
+#submit {
+	margin-top: 20px;
+}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="has-background-info">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
 	@yield('styles')
 </head>
 <body>
-	<div class="pageloader is-bottom-to-top is-active">
+	<div class="pageloader is-info is-bottom-to-top is-active">
 		<span class="title"></span>
 		<span id="nojs" class="title has-text-centered">JavaScript is off
 			<br><span class="details">This requires JavaScript to full operate.</span>
@@ -24,10 +24,11 @@
 					<div class="column">
 						<h3 class="title">UE COMELEC Registration & Scheduling</h3>
 					</div>
-					<form class="column is-3-desktop is-5-tablet">
+					<form method="POST" class="column is-3-desktop is-5-tablet">
+						@csrf
 						<div class="buttons is-right">
-							<button id="export" class="button is-info" type="button" disabled><span class="icon"><i class="fas fa-file-excel"></i></span>Export</button>
-							<button id="logout" class="button is-danger is-outlined" type="submit"><span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout</button>
+							<button id="export" class="button is-info" type="button" title="Export is not available yet" disabled><span class="icon"><i class="fas fa-file-excel"></i></span>Export</button>
+							<button id="logout" class="button is-danger is-outlined" title="Logout" type="submit"><span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout</button>
 						</div>
 					</form>
 				</div>

@@ -24,8 +24,6 @@ class CreateGuestsTable extends Migration
                 'CERTIFICATION',
                 'REGISTRATION'
             ]);
-            $table->integer('sms_code');
-            $table->boolean('sms_confirm');
             $table->rememberToken();
             $table->timestamps();
         });
