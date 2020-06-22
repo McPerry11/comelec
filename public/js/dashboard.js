@@ -90,7 +90,7 @@ $(function() {
 	}
 
 	function loadAction(button) {
-		$('.button').attr('disabled', true);
+		$('button').attr('disabled', true);
 		$(button).removeAttr('disabled').addClass('is-loading');
 	}
 
@@ -100,6 +100,7 @@ $(function() {
 		$('#phone').removeClass('is-danger');
 		$('#warning').removeClass('has-text-danger').text('Do not enter the first zero');
 		$('.icon.is-right').remove();
+		$('#sched input[type="radio"]').prop('checked', false);
 	}
 
 	if (window.matchMedia('only screen and (max-width: 768px)').matches) {
@@ -233,7 +234,7 @@ $(function() {
 			success: function(data) {
 				$('#editModal').addClass('is-active');
 				$('html').addClass('is-clipped');
-				$('.button').removeAttr('disabled');
+				$('button').removeAttr('disabled');
 				$('#export').attr('disabled', true);
 				$(button).removeClass('is-loading');
 				$('#lastname').val(data.last_name);
@@ -241,7 +242,7 @@ $(function() {
 				$('#middlename').val(data.middle_name);
 				$('#brngy').val(data.barangay);
 				$('#phone').val(data.contact_number.substr(1));
-				data.schedule == 'CERTIFICATION' ? $('#sched input[value="cert"]').attr('checked', true) : $('#sched input[value="reg"]').attr('checked', true);
+				data.schedule == 'CERTIFICATION' ? $('#sched input[value="cert"]').prop('checked', true) : $('#sched input[value="reg"]').prop('checked', true);
 			},
 			error: function(err) {
 				console.log(err);
@@ -250,7 +251,7 @@ $(function() {
 					title: 'Cannot Connect to Server',
 					text: 'Something went wrong. PLease try again later.',
 				});
-				$('.button').removeAttr('disabled');
+				$('button').removeAttr('disabled');
 				$('#export').attr('disabled', true);
 				$(button).removeClass('is-loading');
 			}
@@ -259,6 +260,72 @@ $(function() {
 
 	$('body').delegate('.remove', 'click', function() {
 		loadAction(this);
+		$(this).removeClass('is-inverted');
+		let id = $(this).data('id'), button = this;
+		$.ajax({
+			type: 'POST',
+			url: 'guests',
+			data: {data:'delete', id:id},
+			datatype: 'JSON',
+			success: function(data) {
+				$('button').removeAttr('disabled');
+				$('#export').attr('disabled', true);
+				$(button).removeClass('is-loading').addClass('is-inverted');
+				Swal.fire({
+					icon: 'warning',
+					title: 'Confirm Delete',
+					text: 'Are you sure you want to delete ' + data.first_name + ' ' + data.last_name + '?',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.value) {
+						Swal.fire({
+							html: '<span class="icon is-large"><i class="fas fa-spinner fa-spin fa-2x"></i></span>',
+							showConfirmButton: false,
+							allowOutsideClick: false,
+							allowEscapeKey: false,
+						});
+						$.ajax({
+							type: 'POST',
+							url: 'guest/delete',
+							data: {data:'dashboard', id:id},
+							datatype: 'JSON',
+							success: function(response) {
+								Swal.fire({
+									icon: 'success',
+									title: 'Delete Successful',
+									text: response.msg,
+									showConfirmButton: false,
+									timer: 2500,
+								}).then(function() {
+									retrieveGuests();
+								});
+							},
+							error: function(err) {
+								console.log(err);
+								Swal.fire({
+									icon: 'error',
+									title: 'Cannot Connect to Server',
+									text: 'Something went wrong. Please try again later.'
+								});
+							}
+						});
+					}
+				});
+			},
+			error: function(err) {
+				console.log(err);
+				Swal.fire({
+					icon: 'error',
+					title: 'Cannot Connect to Server',
+					text: 'Something went wrong. Please try again later.'
+				});
+				$('button').removeAttr('disabled');
+				$('#export').attr('disabled', true);
+				$(button).removeClass('is-loading');
+			}
+		});
 	});
 
 	$('.delete').click(function() {
@@ -364,6 +431,7 @@ $(function() {
 						showConfirmButton: false,
 						timer: 2500
 					});
+					$('#sched input[type="radio"]').prop('checked', false);
 					$('#editModal').removeClass('is-active');
 					$('html').removeClass('is-clipped');
 					retrieveGuests();

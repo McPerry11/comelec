@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::post('', 'LoginController@logout');
 	Route::post('guest/edit', 'GuestsController@edit');
 	Route::post('guest/update', 'GuestsController@update');
+	Route::post('guest/delete', 'GuestsController@destroy');
 
 	Route::post('logs', 'IndexController@logs');
 });

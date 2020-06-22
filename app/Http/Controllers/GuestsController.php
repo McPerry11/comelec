@@ -130,6 +130,8 @@ class GuestsController extends Controller
           }
           return response()->json(array('cert' => $cert, 'reg' => $reg, 'guests' => $guests));
         }
+      } else if ($request->data == 'delete') {
+        return Guest::find($request->id);
       }
     }
 
@@ -240,7 +242,7 @@ class GuestsController extends Controller
           $guest = Guest::find($request->id);
 
           if ($request->first_name != $guest->first_name || $request->middle_name != $guest->middle_name || $request->last_name != $guest->last_name) {
-            Log::create(['description' => 'User updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s name to ' . $request->first_name . ' ' . $request->middle_name . ' ' . $request->last_name . '.']);
+            Log::create(['description' => Auth::user()->username . ' updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s name to ' . $request->first_name . ' ' . $request->middle_name . ' ' . $request->last_name . '.']);
             $guest->fill($request->only([
               'last_name',
               'first_name',
@@ -248,13 +250,13 @@ class GuestsController extends Controller
             ]));
           }
           if ($request->barangay != $guest->barangay) {
-            Log::create(['description' => 'User updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s barangay to ' . $request->barangay . '.']);
+            Log::create(['description' => Auth::user()->username . ' updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s barangay to ' . $request->barangay . '.']);
           }
           if ($request->contact_number != $guest->contact_number) {
-            Log::create(['description' => 'User updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s contact number to ' . $request->contact_number . '.']);
+            Log::create(['description' => Auth::user()->username . ' updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s contact number to ' . $request->contact_number . '.']);
           }
           if ($request->schedule != $guest->schedule) {
-            Log::create(['description' => 'User updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s schedule to VOTER ' . $request->schedule . '.']);
+            Log::create(['description' => Auth::user()->username . ' updated ' . $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name . '\'s schedule to VOTER ' . $request->schedule . '.']);
           }
 
           $guest->fill($request->only([
@@ -280,8 +282,14 @@ class GuestsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+      if ($request->data == 'dashboard') {
+        $guest = Guest::find($request->id);
+        $name = $guest->first_name . ' ' . $guest->middle_name . ' ' . $guest->last_name;
+        Log::create(['description' => Auth::user()->username . ' deleted ' . $name . '.']);
+        Guest::find($request->id)->delete();
+        return response()->json(array('msg' => $name . ' successfully deleted'));
+      }
     }
   }
