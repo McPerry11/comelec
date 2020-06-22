@@ -68,6 +68,7 @@ $(function() {
 								confirmButtonText: 'Try Again',
 							});
 							$('#phone').addClass('is-danger');
+							$('.icon.is-right').remove();
 							$('#phonecontrol').addClass('has-icons-right').append('<span class="icon is-right has-text-danger"><i class="fas fa-times"></i></span>');
 							$('#warning').addClass('has-text-danger').text(response.warn);
 						}

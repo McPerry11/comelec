@@ -12,7 +12,7 @@
 	<div class="pageloader is-info is-bottom-to-top is-active">
 		<span class="title"></span>
 		<span id="nojs" class="title has-text-centered">JavaScript is off
-			<br><span class="details">This requires JavaScript to full operate.</span>
+			<br><span class="details">This requires JavaScript to fully operate.</span>
 			<br><span class="details">Turn on JavaScript and try again.</span></span>
 		</div>
 		@if (Request::is('login') || Request::is('register'))

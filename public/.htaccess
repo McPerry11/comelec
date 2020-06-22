@@ -4,6 +4,7 @@
     </IfModule>
 
     RewriteEngine On
+    RewriteBase /comelec
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .

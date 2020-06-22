@@ -5,7 +5,7 @@ $.ajaxSetup({
 });
 
 $(window).on('load', function() {
-	if ($(location).attr('pathname') != '/comelec/public/') {
+	if ($(location).attr('pathname') != '/comelec/') {
 		$('.pageloader .title').text('');
 		$('.pageloader').removeClass('is-active');
 	}
