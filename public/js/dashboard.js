@@ -63,7 +63,7 @@ $(function() {
 		$('tbody tr').remove();
 		$('nav').remove();
 		$('#search button').attr('disabled', true);
-		$('tbody').append('<tr><td colspan="2" class="has-text-centered"><span class="icon is-large"><i class="fas fa-spinner fa-spin fa-2x"></i></span><div class="has-text-centered">Fetching logs</div></td></tr>');
+		$('tbody').append('<tr><td colspan="3" class="has-text-centered"><span class="icon is-large"><i class="fas fa-spinner fa-spin fa-2x"></i></span><div class="has-text-centered">Fetching logs</div></td></tr>');
 		$.ajax({
 			type: 'POST',
 			url: urlLog,
@@ -73,10 +73,10 @@ $(function() {
 				$('#search button').removeAttr('disabled');
 				$('tbody tr').remove();
 				if (data.total == 0) {
-					$('tbody').append('<tr><td colspan="2" class="has-text-centered"><span class="icon"><i class="fas fa-exclamation-circle"></i></span>No logs found</td></tr>');
+					$('tbody').append('<tr><td colspan="3" class="has-text-centered"><span class="icon"><i class="fas fa-exclamation-circle"></i></span>No logs found</td></tr>');
 				} else {
 					for (let i = 0; i < data.data.length; i++)
-						$('tbody').append('<tr><td>' + data.data[i].id + '</td><td>' + data.data[i].description + '</td></tr>');
+						$('tbody').append('<tr><td>' + data.data[i].id + '</td><td>' + data.data[i].description + '</td><td>' + data.data[i].created_at + '</td></tr>');
 					if (data.last_page > 1) {
 						currentLog = data.current_page, prevLog = data.prev_page_url, nextLog = data.next_page_url, lastLog = data.last_page_url;
 						pagination(currentLog, prevLog, nextLog, lastLog, data.last_page);
@@ -172,7 +172,7 @@ $(function() {
 					$('#dashboard').removeClass('is-active');
 					$('#logs').addClass('is-active');
 					$('th').remove();
-					$('thead tr').append('<th>Log #</th><th>Description</th>');
+					$('thead tr').append('<th>Log #</th><th>Description</th><th>Date & Time</th>');
 					$('#search input').attr('placeholder', 'Search log number or description...').val('');
 					searchLog = '';
 					retrieveLogs();
