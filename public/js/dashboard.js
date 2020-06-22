@@ -7,7 +7,7 @@ $(function() {
 			text: 'Something went wrong. Please try again later.'
 		});
 		$('tbody tr').remove();
-		let column = $('#dashboard').hasClass('is-active') ? 5 : 2;
+		let column = $('#dashboard').hasClass('is-active') ? 5 : 3;
 		$('tbody').append('<tr><td colspan="' + column +  '" class="has-text-centered"><span class="icon"><i class="fas fa-exclamation-circle"></i></span>Something went wrong. Please refresh and try again.</td></tr>');
 		$('.pageloader .title').text('');
 		$('.pageloader').removeClass('is-active');
@@ -63,7 +63,7 @@ $(function() {
 		$('tbody tr').remove();
 		$('nav').remove();
 		$('#search button').attr('disabled', true);
-		$('tbody').append('<tr><td colspan="2" class="has-text-centered"><span class="icon is-large"><i class="fas fa-spinner fa-spin fa-2x"></i></span><div class="has-text-centered">Fetching logs</div></td></tr>');
+		$('tbody').append('<tr><td colspan="3" class="has-text-centered"><span class="icon is-large"><i class="fas fa-spinner fa-spin fa-2x"></i></span><div class="has-text-centered">Fetching logs</div></td></tr>');
 		$.ajax({
 			type: 'POST',
 			url: urlLog,
@@ -73,10 +73,12 @@ $(function() {
 				$('#search button').removeAttr('disabled');
 				$('tbody tr').remove();
 				if (data.total == 0) {
-					$('tbody').append('<tr><td colspan="2" class="has-text-centered"><span class="icon"><i class="fas fa-exclamation-circle"></i></span>No logs found</td></tr>');
+					$('tbody').append('<tr><td colspan="3" class="has-text-centered"><span class="icon"><i class="fas fa-exclamation-circle"></i></span>No logs found</td></tr>');
 				} else {
-					for (let i = 0; i < data.data.length; i++)
-						$('tbody').append('<tr><td>' + data.data[i].id + '</td><td>' + data.data[i].description + '</td></tr>');
+					for (let i = 0; i < data.data.length; i++) {
+						let date = new Date(data.data[i].created_at);
+						$('tbody').append('<tr><td>' + data.data[i].id + '</td><td>' + data.data[i].description + '</td><td>' + formatDate(date) + '</td></tr>');
+					}
 					if (data.last_page > 1) {
 						currentLog = data.current_page, prevLog = data.prev_page_url, nextLog = data.next_page_url, lastLog = data.last_page_url;
 						pagination(currentLog, prevLog, nextLog, lastLog, data.last_page);
@@ -101,6 +103,15 @@ $(function() {
 		$('#warning').removeClass('has-text-danger').text('Do not enter the first zero');
 		$('.icon.is-right').remove();
 		$('#sched input[type="radio"]').prop('checked', false);
+	}
+
+	function formatDate(date) {
+		let hours = date.getHours(), minutes = date.getMinutes(), ampm = hours >= 12 ? 'pm' : 'am';
+		hours %= 12;
+		hours = hours ? hours : 12;
+		minutes = minutes < 10 ? '0' + minutes : minutes;
+		let strTime = hours + ':' + minutes + ' ' + ampm;
+		return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' - ' + strTime;
 	}
 
 	if (window.matchMedia('only screen and (max-width: 768px)').matches) {
@@ -172,7 +183,7 @@ $(function() {
 					$('#dashboard').removeClass('is-active');
 					$('#logs').addClass('is-active');
 					$('th').remove();
-					$('thead tr').append('<th>Log #</th><th>Description</th>');
+					$('thead tr').append('<th>Log #</th><th>Description</th><th>Date & Time</th>');
 					$('#search input').attr('placeholder', 'Search log number or description...').val('');
 					searchLog = '';
 					retrieveLogs();
