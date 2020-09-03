@@ -1,3 +1,11 @@
+# COMELEC Registration and Scheduling System
+This is a COMELEC registration & scheduling system. (Rushed Project)
+
+## Collaborator
+ - [Mack Perry Co](https://github.com/McPerry11)
+ 
+Copyright © 2020 UE CCSS R&D
+
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 <p align="center">
